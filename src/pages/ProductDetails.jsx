@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
+import ProductCard from "../components/Productcard";
 const ProductDetails = () => {
 
 const { products, navigate, currency, addTocart } = useAppContext();
 const{id}=useParams()
 const[relatedProducts,setRelatedProducts]=useState([])
     const [thumbnail, setThumbnail] =useState(null);
-const product=products.find((item)=>item._id == id);
+const product=products.find((item)=>item._id === id);
 useEffect(()=>{
 if(products.length>0){
     let productsCopy=products.slice();
@@ -26,7 +27,7 @@ setThumbnail(product?.image[0] ? product.image[0]:null)
                 <Link to={"/"}>Home</Link> /
                 <Link to={"/products"}> Products</Link> /
                 <Link to={`/products/${product.category.toLowerCase()}`}>{product.category}</Link> /
-                <span className="text-indigo-500"> {product.name}</span>
+                <span className="text-primary"> {product.name}</span>
             </p>
 
             <div className="flex flex-col md:flex-row gap-16 mt-4">
@@ -71,12 +72,31 @@ setThumbnail(product?.image[0] ? product.image[0]:null)
                         <button onClick={()=>addTocart(product._id)} className="w-full py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition" >
                             Add to Cart
                         </button>
-                        <button onClick={()=>{addTocart(product._id);navigate("/cart")}} className="w-full py-3.5 cursor-pointer font-medium bg-indigo-500 text-white hover:bg-indigo-600 transition" >
+                        <button onClick={()=>{addTocart(product._id);navigate("/cart")}} className="w-full py-3.5 cursor-pointer font-medium bg-primary text-white hover:bg-primary-dull transition" >
                             Buy now
                         </button>
                     </div>
                 </div>
             </div>
+
+          <div className="flex flex-col items-center mt-20">
+            <div className="flex flex-col items-center w-max">
+                <p className="text-3xl font-medium">Related Products
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 lg:grid-cols-5 mt-6 w-full  ">
+
+                </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 lg:grid-cols-5 mt-6 w-full">
+                {relatedProducts.filter((product)=>product.inStock).map((product,index)=>(
+                    <ProductCard key={index} product={product}/>
+                ))}
+
+            </div>
+            <button onClick={()=> {navigate('/products');scrollTo(0,0)}} className="mx-auto cursor-pointer px-12 my-16 py-2.5 border rounded text-primary hover:bg-primary/10 trnsition ">See More
+            </button>
+          </div>
+
         </div>
     );
 };

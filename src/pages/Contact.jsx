@@ -44,6 +44,9 @@ const Contact = () => {
   };
 
   return (
+  
+  <>
+  <br />
     <form
       onSubmit={handleSubmit}
       className="flex flex-col items-center text-sm"
@@ -112,6 +115,7 @@ const Contact = () => {
         {loading ? "Sending..." : "Send Message"}
       </button>
     </form>
+  </>
   );
 };
 

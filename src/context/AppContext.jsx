@@ -11,13 +11,13 @@ const currency=import.meta.VITE_CURRENCY;
     const [isSeller, setIsSeller] = useState(false)
     const [showUserLogin, setShowUserLogin] = useState(false)
     const [products, setProducts] = useState([])
-    const[cartItems,setcartItems]=useState({}
-    )
-    const[searchQuery,setSearchQuery]=useState({}
-    )
+    const[cartItems,setcartItems]=useState({})
+    const[searchQuery,setSearchQuery]=useState({})
+
     const fetchProducts = async () => {
         setProducts(dummyProducts)
     }
+    
     const addTocart=(itemId)=>{
         let cartData=structuredClone(cartItems);
         if(cartData[itemId]){

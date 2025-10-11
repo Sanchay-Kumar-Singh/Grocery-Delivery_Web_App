@@ -11,6 +11,7 @@ import Contact from './pages/Contact.jsx'
 import ProductCategory from './pages/ProductCategory.jsx';
 import ProductDetails from './pages/ProductDetails.jsx';
 import Cart from './pages/Cart.jsx';
+
 const App = () => {
   const isSellerPath = useLocation().pathname.includes("seller");
   const { showUserLogin } = useAppContext();
@@ -25,8 +26,8 @@ const App = () => {
           <Route path='/products' element={<AllProducts />} />
           <Route path='/contact' element={<Contact />} />
           <Route path='/products/:category' element={<ProductCategory />} /> 
-           <Route path='/product/:category/:id' element={<ProductDetails/>} />
-           <Route path='cart' element={<Cart/>}></Route>
+          <Route path='/products/:category/:id' element={<ProductDetails/>} />
+          <Route path='cart' element={<Cart/>}></Route>
         </Routes>
       </div>
       {!isSellerPath && <Footer />}</div>
