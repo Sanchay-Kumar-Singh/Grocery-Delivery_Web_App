@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
-    const currency = import.meta.VITE_CURRENCY;
+    const currency = import.meta.env.VITE_CURRENCY;
     const navigate = useNavigate();
 
     const [user, setUser] = useState(null);
@@ -70,7 +70,7 @@ export const AppContextProvider = ({ children }) => {
 
     
     const addAddress = (newAddress) => {
-        setAddresses((prev) => [...prev, newAddress]);
+     setAddresses((prev) => [newAddress, ...prev]);
         toast.success("Address Saved!");
     };
 

@@ -1,54 +1,146 @@
-import React from 'react'
-import { useAppContext } from '../context/AppContext';
+import React from "react";
+import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
+
 const Login = () => {
-    const {setShowUserLogin,setUser}=useAppContext();
-;       const [state, setState] = React.useState("login");
+    const { setShowUserLogin, setUser, navigate } = useAppContext();
+
+    const [state, setState] = React.useState("login");
     const [name, setName] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    const onSubmitHandler=async(event)=>{
-        event.preventDefault();
-        setUser({
-            email:"test@glocery.dev",
-            name:"Glocery"
-        })
-        setShowUserLogin(false)
-    }
-  return (
-    <div onClick={()=>setShowUserLogin(false)} className='fixed top-0 bottom-0 left-0 right-0 z-30 flex items-center text-sm text-gray-600 bg-black/50'> 
-    <form onSubmit={onSubmitHandler} onClick={(e)=>e.stopPropagation()} className="flex flex-col gap-4 m-auto items-start p-8 py-12 w-80 sm:w-[352px] text-gray-500 rounded-lg shadow-xl border border-gray-200 bg-white">
-            <p className="text-2xl font-medium m-auto">
-                <span className="text-primary">User</span> {state === "login" ? "Login" : "Sign Up"}
-            </p>
-            {state === "register" && (
-                <div className="w-full">
-                    <p>Name</p>
-                    <input onChange={(e) => setName(e.target.value)} value={name} placeholder="type here" className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary" type="text" required />
-                </div>
-            )}
-            <div className="w-full ">
-                <p>Email</p>
-                <input onChange={(e) => setEmail(e.target.value)} value={email} placeholder="type here" className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary" type="email" required />
-            </div>
-            <div className="w-full ">
-                <p>Password</p>
-                <input onChange={(e) => setPassword(e.target.value)} value={password} placeholder="type here" className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary" type="password" required />
-            </div>
-            {state === "register" ? (
-                <p>
-                    Already have account? <span onClick={() => setState("login")} className="text-indigo-500 cursor-pointer">click here</span>
-                </p>
-            ) : (
-                <p>
-                    Create an account? <span onClick={() => setState("register")} className="text-indigo-500 cursor-pointer">click here</span>
-                </p>
-            )}
-            <button className="bg-primary hover:bg-primary-dull transition-all text-white w-full py-2 rounded-md cursor-pointer">
-                {state === "register" ? "Create Account" : "Login"}
-            </button>
-        </form></div>
-  )
-}
+    const getStoredUsers = () => {
+        try {
+            return JSON.parse(localStorage.getItem("users")) || [];
+        } catch {
+            return [];
+        }
+    };
 
-export default Login
+    const saveUsers = (users) => {
+        localStorage.setItem("users", JSON.stringify(users));
+    };
+
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+        const users = getStoredUsers();
+
+        if (state === "login") {
+            const found = users.find((u) => u.email === email && u.password === password);
+            if (!found) {
+                toast.error("Invalid email or password");
+                return;
+            }
+            setUser(found);
+            toast.success("Login successful");
+            setShowUserLogin(false);
+            return;
+        }
+
+        const exists = users.some((u) => u.email === email);
+        if (exists) {
+            toast.error("User already exists");
+            return;
+        }
+
+        const newUser = { name, email, password };
+        users.push(newUser);
+        saveUsers(users);
+        setUser(newUser);
+        toast.success("Account created — logged in");
+        setShowUserLogin(false);
+        if (typeof navigate === "function") navigate("/dashboard");
+    };
+
+    return (
+        <div
+            onClick={() => setShowUserLogin(false)}
+            className="fixed inset-0 bg-black/50 flex justify-center items-center z-30"
+        >
+            <form
+                onSubmit={onSubmitHandler}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white p-8 py-12 rounded-lg shadow-xl w-80 sm:w-[352px] text-gray-600 border border-gray-200"
+            >
+                <p className="text-2xl font-medium text-center mb-4">
+                    <span className="text-primary">User</span>{" "}
+                    {state === "login" ? "Login" : "Sign Up"}
+                </p>
+
+                {state === "register" && (
+                    <div className="w-full">
+                        <p>Name</p>
+                        <input
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="type here"
+                            className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary"
+                            type="text"
+                            required
+                        />
+                    </div>
+                )}
+
+                <div className="w-full mt-2">
+                    <p>Email</p>
+                    <input
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="type here"
+                        className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary"
+                        type="email"
+                        required
+                    />
+                </div>
+
+                <div className="w-full mt-2">
+                    <p>Password</p>
+                    <input
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="type here"
+                        className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary"
+                        type="password"
+                        required
+                    />
+                </div>
+
+                {state === "login" ? (
+                    <p className="mt-2 text-sm">
+                        Create an account?{" "}
+                        <span
+                            className="text-indigo-500 cursor-pointer"
+                            onClick={() => {
+                                setState("register");
+                                setName("");
+                                setPassword("");
+                            }}
+                        >
+                            click here
+                        </span>
+                    </p>
+                ) : (
+                    <p className="mt-2 text-sm">
+                        Already have account?{" "}
+                        <span
+                            className="text-indigo-500 cursor-pointer"
+                            onClick={() => {
+                                setState("login");
+                                setPassword("");
+                            }}
+                        >
+                            click here
+                        </span>
+                    </p>
+                )}
+
+                <button className="bg-primary hover:bg-primary-dull transition-all text-white w-full py-2 mt-4 rounded-md">
+                    {state === "register" ? "Create Account" : "Login"}
+                </button>
+            </form>
+        </div>
+    );
+};
+
+export default Login;
