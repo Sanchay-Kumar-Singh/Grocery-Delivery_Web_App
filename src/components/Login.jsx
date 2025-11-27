@@ -50,7 +50,7 @@ const Login = () => {
         setUser(newUser);
         toast.success("Account created — logged in");
         setShowUserLogin(false);
-        if (typeof navigate === "function") navigate("/dashboard");
+        if (typeof navigate === "function") navigate("/");
     };
 
     return (
