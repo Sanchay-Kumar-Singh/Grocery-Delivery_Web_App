@@ -1,7 +1,7 @@
 import React from 'react'
 import { assets } from '../assets/assets'
 import { Link } from 'react-router-dom'
-import banner from '../assets/Gemini_Generated_Image_riidusriidusriid.png'
+import banner from '../assets/Screenshot 2025-12-04 022037-Picsart-AiImageEnhancer.png'
 const Mainbanner = () => {
   return (
     <div className='relative'>
